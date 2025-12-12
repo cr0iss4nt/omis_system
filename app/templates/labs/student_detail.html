@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}{{ lab.name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="card-title">{{ lab.name }}</h3>
+                    <div>
+                        <a href="/labs/student/mylabs" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5>Lab Information</h5>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Lab Name:</th>
+                                <td>{{ lab.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Deadline:</th>
+                                <td>
+                                    {% if lab.deadline %}
+                                    {{ lab.deadline.strftime('%Y-%m-%d %H:%M:%S') }}
+                                    {% else %}
+                                    <span class="text-muted">No deadline</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Status:</th>
+                                <td>
+                                    {% if lab.submission %}
+                                    <span class="badge bg-success">Submitted</span>
+                                    {% elif lab.deadline and lab.deadline < now %}
+                                    <span class="badge bg-danger">Overdue</span>
+                                    {% else %}
+                                    <span class="badge bg-warning">Pending</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Grade:</th>
+                                <td>
+                                    {% if lab.grade is not none %}
+                                    <span class="badge bg-{{ 'success' if lab.grade >= 60 else 'danger' }}">
+                                        {{ lab.grade }}
+                                    </span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Not graded</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <h5 class="mb-3">Instructions</h5>
+                <div class="card bg-light mb-4">
+                    <div class="card-body">
+                        {{ lab.instruction|nl2br|safe }}
+                    </div>
+                </div>
+                
+                <h5 class="mb-3">Submission</h5>
+                {% if lab.submission %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="mb-0">Your Submission</h6>
+                    </div>
+                    <div class="card-body">
+                        <pre class="bg-light p-3">{{ lab.submission }}</pre>
+                        <p class="text-muted">
+                            Submitted at: {{ lab.submitted_at.strftime('%Y-%m-%d %H:%M:%S') if lab.submitted_at else 'N/A' }}
+                        </p>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if not lab.submission or (lab.deadline and lab.deadline > now) %}
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">{% if lab.submission %}Update Submission{% else %}Submit Lab{% endif %}</h6>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="/labs/student/{{ lab.id }}/submit">
+                            <div class="mb-3">
+                                <label for="submission" class="form-label">Your Solution *</label>
+                                <textarea class="form-control" id="submission" name="submission" rows="8" required>{{ lab.submission or '' }}</textarea>
+                                <div class="form-text">
+                                    Paste your code, results, or any other required information here.
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    {% if lab.submission %}Update Submission{% else %}Submit Lab{% endif %}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Create Model{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">Create New Model</h3>
+                
+                {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endif %}
+                
+                <form method="post" action="/models/create" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Model Name *</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description *</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="model_type" class="form-label">Model Type *</label>
+                        <select class="form-select" id="model_type" name="model_type" required>
+                            <option value="">Select model type</option>
+                            {% for type in model_types %}
+                            <option value="{{ type }}">{{ type|title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="model_file" class="form-label">Model File *</label>
+                        <input type="file" class="form-control" id="model_file" name="model_file" required>
+                        <div class="form-text">
+                            Upload model file (e.g., .h5, .pkl, .joblib, .py)
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Create Model</button>
+                        <a href="/models" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

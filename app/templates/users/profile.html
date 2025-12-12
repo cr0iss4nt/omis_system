@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">My Profile</h3>
+                
+                {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endif %}
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5>Profile Information</h5>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Full Name:</th>
+                                <td>{{ user_details.full_name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email:</th>
+                                <td>{{ user_details.email }}</td>
+                            </tr>
+                            <tr>
+                                <th>Username:</th>
+                                <td>{{ username }}</td>
+                            </tr>
+                            <tr>
+                                <th>Role:</th>
+                                <td>
+                                    <span class="badge bg-{{ 
+                                        'primary' if user.role == 'admin' 
+                                        else 'success' if user.role == 'teacher' 
+                                        else 'info' if user.role == 'researcher' 
+                                        else 'secondary' 
+                                    }}">
+                                        {{ user.role|title }}
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <h5 class="mb-3">Update Profile</h5>
+                <form method="post" action="/profile/update">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="full_name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="full_name" name="full_name" value="{{ user_details.full_name }}">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user_details.email }}">
+                        </div>
+                    </div>
+                    
+                    <h6 class="mt-4 mb-3">Change Password</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="current_password" class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="current_password" name="current_password">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="new_password" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="new_password" name="new_password" minlength="6">
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

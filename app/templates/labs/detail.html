@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}{{ lab.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="card-title">{{ lab.name }}</h3>
+                    <div>
+                        <a href="/labs" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5>Lab Information</h5>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>ID:</th>
+                                <td>{{ lab.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Name:</th>
+                                <td>{{ lab.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Experiment:</th>
+                                <td>
+                                    <a href="/experiments/{{ lab.experiment_id }}" class="text-decoration-none">
+                                        {{ lab.experiment_name }}
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Deadline:</th>
+                                <td>
+                                    {% if lab.deadline %}
+                                    {{ lab.deadline.strftime('%Y-%m-%d %H:%M:%S') }}
+                                    {% else %}
+                                    <span class="text-muted">No deadline</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <h5 class="mb-3">Instructions</h5>
+                <div class="card bg-light mb-4">
+                    <div class="card-body">
+                        {{ lab.instruction|nl2br|safe }}
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="/labs/{{ lab.id }}/assign" class="btn btn-primary me-md-2">
+                        <i class="bi bi-person-plus"></i> Assign Students
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Assigned Students -->
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="mb-0">Assigned Students</h5>
+            </div>
+            <div class="card-body">
+                {% if lab.assignments %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Grade</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for assignment in lab.assignments %}
+                            <tr>
+                                <td>{{ assignment.student_id }}</td>
+                                <td>{{ assignment.full_name }}</td>
+                                <td>{{ assignment.email }}</td>
+                                <td>
+                                    {% if assignment.grade is not none %}
+                                    <span class="badge bg-{{ 'success' if assignment.grade >= 60 else 'danger' }}">
+                                        {{ assignment.grade }}
+                                    </span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Not graded</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#gradeModal{{ assignment.student_id }}">
+                                        <i class="bi bi-pencil"></i> Grade
+                                    </button>
+                                </td>
+                            </tr>
+                            
+                            <!-- Grade Modal -->
+                            <div class="modal fade" id="gradeModal{{ assignment.student_id }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Grade for {{ assignment.full_name }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="post" action="/labs/{{ lab.id }}/grade">
+                                                <input type="hidden" name="student_id" value="{{ assignment.student_id }}">
+                                                <div class="mb-3">
+                                                    <label for="grade" class="form-label">Grade (0-100)</label>
+                                                    <input type="number" class="form-control" id="grade" name="grade" 
+                                                           min="0" max="100" step="0.1" value="{{ assignment.grade or '' }}">
+                                                </div>
+                                                <div class="d-grid">
+                                                    <button type="submit" class="btn btn-primary">Save Grade</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No students assigned to this lab yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

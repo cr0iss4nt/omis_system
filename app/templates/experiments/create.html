@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Create Experiment{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">Create New Experiment</h3>
+                
+                {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endif %}
+                
+                <form method="post" action="/experiments/create">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Experiment Name *</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description *</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="model_id" class="form-label">Model *</label>
+                        <select class="form-select" id="model_id" name="model_id" required>
+                            <option value="">Select a model</option>
+                            {% for model in models %}
+                            <option value="{{ model.id }}">{{ model.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="parameters_json" class="form-label">Parameters (JSON format)</label>
+                        <textarea class="form-control" id="parameters_json" name="parameters_json" rows="5" placeholder='{"learning_rate": 0.001, "epochs": 100}'></textarea>
+                        <div class="form-text">
+                            Enter parameters as a JSON object with key-value pairs.
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Create Experiment</button>
+                        <a href="/experiments" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Basic JSON validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+        const jsonField = document.getElementById('parameters_json');
+        if (jsonField.value.trim() !== '') {
+            try {
+                JSON.parse(jsonField.value);
+            } catch (e) {
+                alert('Invalid JSON format in parameters field: ' + e.message);
+                event.preventDefault();
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

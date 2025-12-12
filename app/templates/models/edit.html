@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Model{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">Edit Model</h3>
+                
+                <form method="post" action="/models/{{ model.id }}/update">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Model Name *</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ model.name }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description *</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required>{{ model.description }}</textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="model_type" class="form-label">Model Type *</label>
+                        <select class="form-select" id="model_type" name="model_type" required>
+                            {% for type in model_types %}
+                            <option value="{{ type }}" {% if model.model_type == type %}selected{% endif %}>{{ type|title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Update Model</button>
+                        <a href="/models/{{ model.id }}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

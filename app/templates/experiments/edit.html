@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Experiment{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">Edit Experiment</h3>
+                
+                <form method="post" action="/experiments/{{ experiment.id }}/update">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Experiment Name *</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ experiment.name }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description *</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required>{{ experiment.description }}</textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="model_id" class="form-label">Model *</label>
+                        <select class="form-select" id="model_id" name="model_id" required>
+                            {% for model in models %}
+                            <option value="{{ model.id }}" {% if experiment.model_id == model.id %}selected{% endif %}>{{ model.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Update Experiment</button>
+                        <a href="/experiments/{{ experiment.id }}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+                
+                <hr class="my-4">
+                
+                <h5 class="mb-3">Parameters</h5>
+                {% if parameters %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Value</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for param in parameters %}
+                            <tr>
+                                <td>{{ param.name }}</td>
+                                <td><code>{{ param.value }}</code></td>
+                                <td>
+                                    <form method="post" action="/experiments/{{ experiment.id }}/delete-parameter/{{ param.id }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this parameter?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No parameters configured for this experiment.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

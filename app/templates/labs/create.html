@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Create Lab{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">Create New Lab</h3>
+                
+                {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endif %}
+                
+                <form method="post" action="/labs/create">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Lab Name *</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="instruction" class="form-label">Instructions *</label>
+                        <textarea class="form-control" id="instruction" name="instruction" rows="5" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="deadline" class="form-label">Deadline *</label>
+                        <input type="datetime-local" class="form-control" id="deadline" name="deadline" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="experiment_id" class="form-label">Experiment *</label>
+                        <select class="form-select" id="experiment_id" name="experiment_id" required>
+                            <option value="">Select an experiment</option>
+                            {% for experiment in experiments %}
+                            <option value="{{ experiment.id }}">{{ experiment.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Create Lab</button>
+                        <a href="/labs" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

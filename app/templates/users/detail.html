@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}User Details{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="card-title">User Details</h3>
+                    <div>
+                        <a href="/users" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+                
+                {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endif %}
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5>Basic Information</h5>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>ID:</th>
+                                <td>{{ user_data.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Full Name:</th>
+                                <td>{{ user_data.full_name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email:</th>
+                                <td>{{ user_data.email }}</td>
+                            </tr>
+                            <tr>
+                                <th>Username:</th>
+                                <td>{{ user_data.username }}</td>
+                            </tr>
+                            <tr>
+                                <th>Role:</th>
+                                <td>
+                                    <span class="badge bg-{{ 
+                                        'primary' if user_data.role == 'admin' 
+                                        else 'success' if user_data.role == 'teacher' 
+                                        else 'info' if user_data.role == 'researcher' 
+                                        else 'secondary' 
+                                    }}">
+                                        {{ user_data.role|title }}
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <h5 class="mb-3">Update User Information</h5>
+                <form method="post" action="/users/{{ user_data.id }}/update">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="full_name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="full_name" name="full_name" value="{{ user_data.full_name }}">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user_data.email }}">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Role</label>
+                        <select class="form-select" id="role" name="role">
+                            <option value="student" {% if user_data.role == 'student' %}selected{% endif %}>Student</option>
+                            <option value="teacher" {% if user_data.role == 'teacher' %}selected{% endif %}>Teacher</option>
+                            <option value="researcher" {% if user_data.role == 'researcher' %}selected{% endif %}>Researcher</option>
+                            <option value="admin" {% if user_data.role == 'admin' %}selected{% endif %}>Admin</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">New Password (leave blank to keep current)</label>
+                        <input type="password" class="form-control" id="password" name="password" minlength="6">
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Update User</button>
+                    </div>
+                </form>
+                
+                <hr class="my-4">
+                
+                <div class="d-grid">
+                    <form method="post" action="/users/{{ user_data.id }}/delete" onsubmit="return confirm('Are you sure you want to delete this user? This action cannot be undone.');">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Delete User
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

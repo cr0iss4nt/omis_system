@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}My Labs{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mb-4">My Lab Assignments</h2>
+
+    <!-- Labs Table -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Lab Name</th>
+                            <th>Deadline</th>
+                            <th>Status</th>
+                            <th>Grade</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lab in labs %}
+                        <tr>
+                            <td>{{ lab.name }}</td>
+                            <td>
+                                {% if lab.deadline %}
+                                {{ lab.deadline.strftime('%Y-%m-%d %H:%M') }}
+                                {% else %}
+                                <span class="text-muted">No deadline</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if lab.submission %}
+                                <span class="badge bg-success">Submitted</span>
+                                {% elif lab.deadline and lab.deadline < now %}
+                                <span class="badge bg-danger">Overdue</span>
+                                {% else %}
+                                <span class="badge bg-warning">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if lab.grade is not none %}
+                                <span class="badge bg-{{ 'success' if lab.grade >= 60 else 'danger' }}">
+                                    {{ lab.grade }}
+                                </span>
+                                {% else %}
+                                <span class="badge bg-secondary">Not graded</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="/labs/student/{{ lab.id }}" class="btn btn-sm btn-outline-primary">
+                                    {% if lab.submission %}
+                                    <i class="bi bi-eye"></i> View
+                                    {% else %}
+                                    <i class="bi bi-pencil"></i> Submit
+                                    {% endif %}
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">No lab assignments found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

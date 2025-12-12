@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Welcome Card -->
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Welcome, {{ user.role|title }}!</h5>
+                <p class="card-text">
+                    You are logged in to the ML Experiment Management System.
+                    {% if user.role == 'researcher' %}
+                    Manage your models and experiments.
+                    {% elif user.role == 'teacher' %}
+                    Create and assign labs to students.
+                    {% elif user.role == 'student' %}
+                    View and submit your lab assignments.
+                    {% elif user.role == 'admin' %}
+                    Manage all system resources.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="col-md-12">
+        <h4>Quick Actions</h4>
+        <div class="row">
+            {% if user.role in ['researcher', 'admin'] %}
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-cpu display-4 text-primary mb-3"></i>
+                        <h5 class="card-title">Models</h5>
+                        <p class="card-text">Manage ML models</p>
+                        <a href="/models" class="btn btn-primary">View Models</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-diagram-3 display-4 text-success mb-3"></i>
+                        <h5 class="card-title">Experiments</h5>
+                        <p class="card-text">Run experiments</p>
+                        <a href="/experiments" class="btn btn-success">View Experiments</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-file-earmark-arrow-up display-4 text-info mb-3"></i>
+                        <h5 class="card-title">Files</h5>
+                        <p class="card-text">Upload and manage files</p>
+                        <a href="/files" class="btn btn-info">View Files</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if user.role in ['teacher', 'admin'] %}
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-journal-text display-4 text-warning mb-3"></i>
+                        <h5 class="card-title">Labs</h5>
+                        <p class="card-text">Manage lab assignments</p>
+                        <a href="/labs" class="btn btn-warning">View Labs</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if user.role == 'student' %}
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-journal-check display-4 text-info mb-3"></i>
+                        <h5 class="card-title">My Labs</h5>
+                        <p class="card-text">View assigned labs</p>
+                        <a href="/labs/student/mylabs" class="btn btn-info">View My Labs</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if user.role == 'admin' %}
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-people display-4 text-secondary mb-3"></i>
+                        <h5 class="card-title">Users</h5>
+                        <p class="card-text">Manage users</p>
+                        <a href="/users" class="btn btn-secondary">View Users</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="col-md-12 mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Recent Activity</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    {% if user.role in ['researcher', 'admin'] %}
+                    <a href="/models/create" class="list-group-item list-group-item-action">
+                        <i class="bi bi-plus-circle text-success"></i> Create a new model
+                    </a>
+                    <a href="/experiments/create" class="list-group-item list-group-item-action">
+                        <i class="bi bi-plus-circle text-success"></i> Start a new experiment
+                    </a>
+                    <a href="/files/upload" class="list-group-item list-group-item-action">
+                        <i class="bi bi-plus-circle text-success"></i> Upload a new file
+                    </a>
+                    {% endif %}
+                    {% if user.role in ['teacher', 'admin'] %}
+                    <a href="/labs/create" class="list-group-item list-group-item-action">
+                        <i class="bi bi-plus-circle text-success"></i> Create a new lab assignment
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}File Details{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="card-title">File Details</h3>
+                    <div>
+                        <a href="/files" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5>File Information</h5>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>ID:</th>
+                                <td>{{ file.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>File Name:</th>
+                                <td>{{ file.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Storage Path:</th>
+                                <td><code>{{ file.path }}</code></td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h5>Actions</h5>
+                        <div class="d-grid gap-2">
+                            <a href="{{ file_url }}" class="btn btn-success" download>
+                                <i class="bi bi-download"></i> Download File
+                            </a>
+                            <form method="post" action="/files/{{ file.id }}/delete" onsubmit="return confirm('Are you sure you want to delete this file?');">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash"></i> Delete File
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

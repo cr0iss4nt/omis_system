@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Files{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>File Management</h2>
+        <a href="/files/upload" class="btn btn-primary">
+            <i class="bi bi-upload"></i> Upload File
+        </a>
+    </div>
+
+    <!-- Files Table -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>File Name</th>
+                            <th>Storage Path</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for file in files %}
+                        <tr>
+                            <td>{{ file.id }}</td>
+                            <td>{{ file.name }}</td>
+                            <td>
+                                <code class="text-muted">{{ file.path|truncate(30) }}</code>
+                            </td>
+                            <td>
+                                <a href="/files/{{ file.id }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="/static/uploads/{{ file.path }}" class="btn btn-sm btn-outline-success" download>
+                                    <i class="bi bi-download"></i>
+                                </a>
+                                <form method="post" action="/files/{{ file.id }}/delete" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this file?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">No files uploaded yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
