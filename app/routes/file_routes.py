@@ -5,7 +5,6 @@ import uuid
 from app.auth import get_current_user
 from app.repositories.file_repository import FileRepository
 from app.config import Config
-#from app.templates import templates
 from app.templates_loader import templates
 
 router = APIRouter(prefix="/files", tags=["files"])
@@ -54,7 +53,6 @@ async def upload_file(
     if user["role"] not in ["researcher", "admin"]:
         return RedirectResponse(url="/dashboard")
 
-    # Проверяем расширение файла
     file_ext = os.path.splitext(file.filename)[1].lower()
     if file_ext[1:] not in Config.ALLOWED_EXTENSIONS:
         return templates.TemplateResponse(
@@ -66,7 +64,6 @@ async def upload_file(
             }
         )
 
-    # Сохраняем файл
     filename = f"{uuid.uuid4()}{file_ext}"
     filepath = os.path.join(Config.UPLOAD_FOLDER, filename)
 
@@ -74,7 +71,6 @@ async def upload_file(
         content = await file.read()
         f.write(content)
 
-    # Сохраняем запись в БД
     file_id = FileRepository.add(file.filename, filename)
 
     return RedirectResponse(url=f"/files/{file_id}", status_code=302)
@@ -108,12 +104,10 @@ async def delete_file(
 
     file_data = FileRepository.get(file_id)
     if file_data:
-        # Удаляем физический файл
         filepath = os.path.join(Config.UPLOAD_FOLDER, file_data['path'])
         if os.path.exists(filepath):
             os.remove(filepath)
 
-        # Удаляем запись из БД
         FileRepository.delete(file_id)
 
     return RedirectResponse(url="/files", status_code=302)

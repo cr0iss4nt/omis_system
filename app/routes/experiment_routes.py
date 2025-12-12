@@ -6,7 +6,6 @@ from app.repositories.model_repository import ModelRepository
 from app.repositories.experiment_repository import ExperimentRepository
 from app.repositories.parameter_repository import ParameterRepository
 from app.services.researcher_service import ResearcherService
-#from app.templates import templates
 from app.templates_loader import templates
 
 router = APIRouter(prefix="/experiments", tags=["experiments"])

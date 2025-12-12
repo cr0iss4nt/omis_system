@@ -5,7 +5,6 @@ from app.repositories.user_repository import UserRepository
 class TeacherService:
     @staticmethod
     def create_lab(name, instruction, deadline, experiment_id):
-        # Преобразуем строку в datetime, если необходимо
         if isinstance(deadline, str):
             deadline = datetime.fromisoformat(deadline)
         return LabRepository.add(name, instruction, deadline, experiment_id)

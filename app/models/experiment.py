@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List
-from .parameter import Parameter
 
 
 class ExperimentBase(BaseModel):

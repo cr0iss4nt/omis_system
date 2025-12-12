@@ -7,7 +7,6 @@ from app.repositories.model_repository import ModelRepository
 from app.repositories.file_repository import FileRepository
 from app.services.researcher_service import ResearcherService
 from app.config import Config
-#from app.templates import templates
 from app.templates_loader import templates
 
 router = APIRouter(prefix="/models", tags=["models"])
@@ -68,7 +67,6 @@ async def create_model(
     if user["role"] not in ["researcher", "admin"]:
         return RedirectResponse(url="/dashboard")
 
-    # Проверяем расширение файла
     file_ext = os.path.splitext(model_file.filename)[1].lower()
     if file_ext[1:] not in Config.ALLOWED_EXTENSIONS:
         return templates.TemplateResponse(
@@ -81,7 +79,6 @@ async def create_model(
             }
         )
 
-    # Сохраняем файл модели
     filename = f"{uuid.uuid4()}{file_ext}"
     filepath = os.path.join(Config.UPLOAD_FOLDER, filename)
 
@@ -90,15 +87,12 @@ async def create_model(
         f.write(content)
 
     try:
-        # Сохраняем запись о файле в БД
         file_id = FileRepository.add(model_file.filename, filename)
 
-        # Создаем модель
         model_id = ResearcherService.create_model(name, description, model_type, file_id)
 
         return RedirectResponse(url=f"/models/{model_id}", status_code=302)
     except Exception as e:
-        # Удаляем файл в случае ошибки
         if os.path.exists(filepath):
             os.remove(filepath)
 

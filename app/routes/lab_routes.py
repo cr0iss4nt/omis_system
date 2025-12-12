@@ -3,17 +3,13 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from datetime import datetime, date
 from app.auth import get_current_user
 from app.repositories.experiment_repository import ExperimentRepository
-from app.repositories.user_repository import UserRepository
 from app.services.teacher_service import TeacherService
 from app.services.student_service import StudentService
-from app.services.controller_factory import ControllerFactory
-#from app.templates import templates
 from app.templates_loader import templates
 
 router = APIRouter(prefix="/labs", tags=["labs"])
 
 
-# ---------- Teacher/Admin Routes ----------
 @router.get("/", response_class=HTMLResponse)
 async def list_labs(
         request: Request,
@@ -151,7 +147,6 @@ async def grade_lab(
     return RedirectResponse(url=f"/labs/{lab_id}", status_code=302)
 
 
-# ---------- Student Routes ----------
 @router.get("/student/mylabs", response_class=HTMLResponse)
 async def student_labs(request: Request, user=Depends(get_current_user)):
     if user["role"] != "student":

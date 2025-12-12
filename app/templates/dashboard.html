@@ -10,7 +10,7 @@
             <div class="card-body">
                 <h5 class="card-title">Welcome, {{ user.role|title }}!</h5>
                 <p class="card-text">
-                    You are logged in to the ML Experiment Management System.
+                    You are logged in to the Experiment Management System.
                     {% if user.role == 'researcher' %}
                     Manage your models and experiments.
                     {% elif user.role == 'teacher' %}

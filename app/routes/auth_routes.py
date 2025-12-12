@@ -92,7 +92,6 @@ async def register(
             from passlib.hash import bcrypt
             password_sha256 = hashlib.sha256(password.encode()).hexdigest()
             hashed = bcrypt.hash(password_sha256)
-            #hashed = password_sha256
 
             cur.execute(
                 "INSERT INTO credentials(id, username, pass) VALUES (%s, %s, %s)",

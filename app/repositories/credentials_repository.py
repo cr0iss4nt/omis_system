@@ -6,7 +6,6 @@ from app.database import get_db_cursor
 class CredentialsRepository:
     @staticmethod
     def add(user_id, username, password):
-        # Используем sha256 + bcrypt для совместимости с исходным кодом
         hashed = bcrypt.hash(hashlib.sha256(password.encode()).hexdigest())
         with get_db_cursor() as cur:
             cur.execute(
@@ -17,7 +16,6 @@ class CredentialsRepository:
     @staticmethod
     def auth(username, password):
         with get_db_cursor() as cur:
-            # Получаем хэш пароля из базы
             cur.execute(
                 "SELECT id, pass FROM credentials WHERE username=%s",
                 (username,)
@@ -28,17 +26,9 @@ class CredentialsRepository:
 
             user_id, stored_hash = row
 
-            # Проверяем пароль с sha256 + bcrypt
             password_sha256 = hashlib.sha256(password.encode()).hexdigest()
             if bcrypt.verify(password_sha256, stored_hash):
                 return user_id
-
-            # Для обратной совместимости: если пароль хранится в другом формате
-            try:
-                if bcrypt.verify(password, stored_hash):
-                    return user_id
-            except:
-                pass
 
             return None
 
